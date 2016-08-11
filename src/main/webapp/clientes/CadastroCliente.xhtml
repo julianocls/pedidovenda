@@ -1,0 +1,120 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Novo Cliente</ui:define>
+
+	<ui:define name="corpo">
+		<h:form id="frm1">
+			<h1>Novo Cliente</h1>
+
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup>
+					<p:button value="Novo" outcome="/clientes/CadastroCliente" />
+					<p:commandButton value="Salvar" action="#{cadastroClienteBean.salvar}" update="inclusaoCliente" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Pesquisa" outcome="/clientes/PesquisaClientes"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<h:panelGroup id="inclusaoCliente">			
+		    	<p:messages closable="true"/>
+	
+				<p:panelGrid columns="2" id="painel" style="width:100%; margin-top: 20px" columnClasses="rotulo, campo">
+	
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText id="nome" size="60" value="#{cadastroClienteBean.cliente.nome}"/>
+	
+		    		<p:outputLabel value="Tipo" for="tipo" />
+		    		<p:selectOneRadio id="tipo" styleClass="sem-bordas" value="#{cadastroClienteBean.tipoPessoa}">
+		    			<f:selectItem itemLabel="Física" itemValue="FISICA" />
+		    			<f:selectItem itemLabel="Jurídica" itemValue="JURIDICA" />
+		    			<p:ajax listener="#{cadastroClienteBean.getMaskAndLabel()}" event="change" update="labelPessoa maskPessoa" />
+		    		</p:selectOneRadio>
+
+					<h:panelGroup id="labelPessoa">
+						<p:outputLabel value="CPF" for="cpf" rendered="#{cadastroClienteBean.tipoPessoa=='FISICA' or cadastroClienteBean.tipoPessoa eq null}" />
+						<p:outputLabel value="CNPJ" for="cnpj" rendered="#{cadastroClienteBean.tipoPessoa=='JURIDICA'}" />
+					</h:panelGroup>
+
+					<h:panelGroup id="maskPessoa">
+						<p:inputMask id="cpf" mask="999.999.999-99" rendered="#{cadastroClienteBean.tipoPessoa=='FISICA' or cadastroClienteBean.tipoPessoa eq null}" value="#{cadastroClienteBean.cliente.documentoReceitaFederal}"/>
+						<p:inputMask id="cnpj" mask="99.999.999/9999-99" rendered="#{cadastroClienteBean.tipoPessoa=='JURIDICA'}" value="#{cadastroClienteBean.cliente.documentoReceitaFederal}"/>
+					</h:panelGroup>
+
+					<p:outputLabel value="E-mail" for="email" />
+					<p:inputText id="email" size="40" maxlength="255" value="#{cadastroClienteBean.cliente.email}" />
+				</p:panelGrid>
+			</h:panelGroup>			
+		</h:form>
+		
+		<br />
+		
+		<h:form id="frm2">
+ 			<p:button value="Adicionar Endereço" onclick="inclusaoEnderecoDialog.show(); return false;" style="margin-top: 5px; margin-bottom: -15px"/>
+			<p:dialog header="Inclusão de cliente" widgetVar="inclusaoEnderecoDialog" modal="true" resizable="false">
+				<h:panelGroup id="inclusaoEndereco">
+					<p:messages closable="true"/>
+	
+					<h:panelGrid columns="2" columnClasses="rotulo, campo">
+						<p:outputLabel value="Logradouro" for="logradouro" />
+						<p:inputText id="logradouro" requiredMessage="Informe o logradouro." size="80" maxlength="80" value="#{cadastroClienteBean.endereco.logradouro}"/>						
+						<p:outputLabel value="Numero" for="numero" />
+						<p:inputText id="numero" requiredMessage="Informe o Numero." size="5" maxlength="5" value="#{cadastroClienteBean.endereco.numero}"/>						
+						<p:outputLabel value="Complemento" for="complemento" />
+						<p:inputText id="complemento" requiredMessage="Informe o Complemento." size="60" maxlength="60" value="#{cadastroClienteBean.endereco.complemento}"/>						
+						<p:outputLabel value="CEP" for="cep" />
+						<p:inputMask id="cep" mask="99.999-999" requiredMessage="Informe o CEP." size="10" maxlength="10" value="#{cadastroClienteBean.endereco.cep}"/>
+					</h:panelGrid>
+						
+					<h:panelGrid columns="4" columnClasses="rotulo, campo, rotulo, campo">
+						<p:outputLabel value="Cidade" for="cidade" />
+						<p:inputText id="cidade" requiredMessage="Informe o nome da Cidade." size="60" maxlength="60" value="#{cadastroClienteBean.endereco.cidade}"/>
+						<p:outputLabel value="UF" style="margin-left: 10px;" for="uf"/>
+						<p:inputMask id="uf" mask="aa" requiredMessage="Informe a UF." 
+						             style="text-transform:uppercase; margin-left: -120px!important;" size="2" maxlength="2" value="#{cadastroClienteBean.endereco.uf}"/>
+					</h:panelGrid>
+
+					<p:commandButton value="Incluir" action="#{cadastroClienteBean.salvarEndereco}" update="enderecosTable inclusaoEndereco" oncomplete="validarInclusaoDialog(args,inclusaoEnderecoDialog)" />
+				</h:panelGroup>
+			</p:dialog>
+
+	    	<p:dataTable id="enderecosTable" value="#{pesquisaEnderecosBean.enderecosFiltrados}" var="endereco"
+	    		style="margin-top: 20px" emptyMessage="Nenhum endereço encontrado." rows="20"
+	    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+				
+				<p:column headerText="Logradouro" style="text-align: left" width="300">
+					<h:outputText value="Rua do Teste"/>				
+				</p:column>				
+				<p:column headerText="Numero" width="180" style="text-align: left">
+					<h:outputText value="33"/>
+				</p:column>				
+				<p:column headerText="Complemento" width="180" style="text-align: left">
+					<h:outputText value="Próximo ao JcSoftwares" />
+				</p:column>									
+				<p:column headerText="CEP" width="140" style="text-align: left">
+					<h:outputText value="38.500-000" />
+				</p:column>	
+				<p:column headerText="Cidade/UF" style="text-align: left">
+					<h:outputText value="Monte Carmelo/MG"/>
+				</p:column>
+	    		<p:column style="width: 100px; text-align: center">
+	    			<p:button icon="ui-icon-pencil" title="Editar" />
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="confirmacaoExclusao.show()" />
+	    		</p:column>
+			</p:dataTable>
+			
+	    	<p:confirmDialog header="Exclusão de Endereco" message="Tem certeza que deseja excluir o endereço?" widgetVar="confirmacaoExclusao">
+	    		<p:button value="Não" onclick="confirmacaoExclusao.hide(); return false;" />
+	    		<p:commandButton value="Sim" oncomplete="confirmacaoExclusao.hide();" />
+	    	</p:confirmDialog>
+					
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

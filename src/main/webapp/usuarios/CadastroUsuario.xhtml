@@ -1,0 +1,65 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Novo usuário</ui:define>
+    
+    <ui:define name="corpo">
+    	<h1>Novo usuário</h1>
+		<h:form>
+
+	    	<p:toolbar style="margin-top: 20px">
+	    		<p:toolbarGroup>
+	    			<p:button value="Novo" outcome="/usuarios/CadastroUsuario"/>
+					<p:commandButton value="Salvar" action="#{cadastroUsuarioBean.salvar}" update="inclusaoUsuario" />
+	    		</p:toolbarGroup>
+	    		<p:toolbarGroup align="right">
+	    			<p:button value="Pesquisa" outcome="/usuarios/PesquisaUsuarios"/>
+	    		</p:toolbarGroup>
+	    	</p:toolbar>
+
+			<h:panelGroup id="inclusaoUsuario">			
+		    	<p:messages closable="true"/>
+			    	
+			    	<p:panelGrid columns="2" id="painel" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+			    		<p:outputLabel value="Nome" for="nome"/>
+			    		<p:inputText id="nome" size="60" value="#{cadastroUsuarioBean.usuario.nome}"/>
+			    		
+		   				<p:outputLabel value="E-mail" for="email" />
+		   				<p:inputText id="email" size="30" value="#{cadastroUsuarioBean.usuario.email}"/>
+			    		
+		  				<p:outputLabel value="Senha" for="senha" />
+		   				<p:password id="senha" size="30" value="#{cadastroUsuarioBean.usuario.senha}" feedback="true"/>
+			    	</p:panelGrid>
+			</h:panelGroup>			
+		</h:form>
+		
+		<h:form id="frm2">
+			<h:panelGrid columns="2" style="margin-top: 15px; margin-bottom: -15px;">
+				<p:selectOneMenu id="grupos" required="true" style="width:175px; vertical-align: middle">
+			    	<f:selectItem itemLabel="Administradores" noSelectionOption="true" />
+				</p:selectOneMenu>				
+				<p:commandButton value="Adicionar grupo" style=" height: 27px;" />			
+			</h:panelGrid>
+			
+	    	<p:dataTable id="gruposTable" value="#{gruposBean.gruposFiltrados}" var="grupo"
+	    		style="margin-top: 20px" emptyMessage="Nenhum endereço encontrado." rows="20"
+	    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+				
+				<p:column headerText="Grupo" style="text-align: left" width="100%">
+					<h:outputText value="Vendedores"/>
+				</p:column>
+
+	    		<p:column style=" text-align: center">
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" />
+	    		</p:column>	    			    		
+
+			</p:dataTable>				
+			
+		</h:form>
+    	
+    </ui:define>
+</ui:composition>
