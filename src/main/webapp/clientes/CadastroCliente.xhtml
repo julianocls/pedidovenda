@@ -33,7 +33,7 @@
 		    		<p:selectOneRadio id="tipo" styleClass="sem-bordas" value="#{cadastroClienteBean.tipoPessoa}">
 		    			<f:selectItem itemLabel="Física" itemValue="FISICA" />
 		    			<f:selectItem itemLabel="Jurídica" itemValue="JURIDICA" />
-		    			<p:ajax listener="#{cadastroClienteBean.getMaskAndLabel()}" event="change" update="labelPessoa maskPessoa" />
+		    			<p:ajax listener="#{cadastroClienteBean.getMaskAndLabel}" event="change" update="labelPessoa maskPessoa" />
 		    		</p:selectOneRadio>
 
 					<h:panelGroup id="labelPessoa">
